@@ -5,6 +5,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JSONReader {
     /**
@@ -35,5 +37,13 @@ public class JSONReader {
             System.err.println(e.getMessage());
         }
         return new JSONArray();
+    }
+
+    public static List<JSONObject> getListFromArray(JSONArray array) {
+        List<JSONObject> list = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            list.add(array.getJSONObject(i));
+        }
+        return list;
     }
 }

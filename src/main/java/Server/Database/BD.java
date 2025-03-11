@@ -29,8 +29,6 @@ public class BD {
     public void connexion() {
         try {
         params = JSONReader.getJSONFromFile("./src/main/java/Server/Database/paramBd.json");
-        JSONArray obj = JSONReader.getJSONArrayFromFile("./src/main/java/Server/Database/test.json");
-        System.out.println(obj.toList());
         con = DriverManager.getConnection(params.getString("url"), params.getString("user"), params.getString("passw"));
         }
         catch (SQLException e) {
