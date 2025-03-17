@@ -1,7 +1,7 @@
 package Server.Database;
 
 import Server.Utils.JSONReader;
-import org.json.JSONArray;
+import Server.Utils.PathsClass;
 import org.json.JSONObject;
 
 import java.sql.Connection;
@@ -28,10 +28,9 @@ public class BD {
 
     public void connexion() {
         try {
-        params = JSONReader.getJSONFromFile("./src/main/java/Server/Database/paramBd.json");
-        con = DriverManager.getConnection(params.getString("url"), params.getString("user"), params.getString("passw"));
-        }
-        catch (SQLException e) {
+            params = JSONReader.getJSONFromFile(PathsClass.getBDParamPath());
+            con = DriverManager.getConnection(params.getString("url"), params.getString("user"), params.getString("passw"));
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
     }
