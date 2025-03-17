@@ -1,7 +1,9 @@
 package Server.CalculCA;
 
 import Common.CalculCA.ICalculCA;
+import Server.Utils.DateChecker;
 import Server.Utils.JSONReader;
+import Server.Utils.PathsClass;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,11 +13,17 @@ import java.math.RoundingMode;
 public class CalculCA implements ICalculCA {
     /**
      * @param date date a chercher
-     * @return le chiffre d'affaires
+     * @return le chiffre d'affaires ou Zero si le format n'est pas correct
      */
     public float getCA(String date) {
-        String filename = "./src/main/java/Server/FacturesJson/AB-" + date + ".json";
+        if (DateChecker.isDate(date)){
+            return 0;
+        }
+
+        String filename = PathsClass.getFacturePath() + date + ".json";
+
         JSONArray jsonArray = JSONReader.getJSONArrayFromFile(filename);
+
         BigDecimal ca = BigDecimal.ZERO;
         for (JSONObject obj : JSONReader.getListFromArray(jsonArray)) {
             System.out.println(obj.getFloat("montantCommande"));

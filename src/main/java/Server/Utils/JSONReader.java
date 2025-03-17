@@ -39,6 +39,11 @@ public class JSONReader {
         return new JSONArray();
     }
 
+    /**
+     * Sert à convertir un JSONArray en une list de JSONObject
+     * @param array Object JSONArray à convertir
+     * @return List JSONObject
+     * */
     public static List<JSONObject> getListFromArray(JSONArray array) {
         List<JSONObject> list = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
