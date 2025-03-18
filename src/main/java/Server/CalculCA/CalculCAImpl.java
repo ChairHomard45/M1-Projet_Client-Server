@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class CalculCA implements ICalculCA {
+public class CalculCAImpl implements ICalculCA {
     /**
      * @param date date a chercher
      * @return le chiffre d'affaires ou Zero si le format n'est pas correct
@@ -24,6 +24,7 @@ public class CalculCA implements ICalculCA {
 
         JSONArray jsonArray = JSONReader.getJSONArrayFromFile(filename);
 
+        jsonArray.toList();
         BigDecimal ca = BigDecimal.ZERO;
         for (JSONObject obj : JSONReader.getListFromArray(jsonArray)) {
             System.out.println(obj.getFloat("montantCommande"));

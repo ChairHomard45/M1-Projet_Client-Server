@@ -16,7 +16,7 @@ public class Client {
             Registry reg = LocateRegistry.getRegistry(null);
 
             // Recherche dans le registre de l'objet distant
-            ICalculCA stub = (ICalculCA) reg.lookup("CalculCA");
+            ICalculCA stub = (ICalculCA) reg.lookup("CalculCAImpl");
             System.out.println("CA Test" + stub.getCA("12"));
         } catch (Exception e) {
             System.err.println(e.getMessage());

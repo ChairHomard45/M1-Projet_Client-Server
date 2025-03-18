@@ -22,6 +22,12 @@ public final class JSONAppend {
 
             JSONArray jsonArray = new JSONArray();
             if (!file.createNewFile()) {
+                if (file.length() == 0) {
+                    fileWriter = new FileWriter(file);
+                    fileWriter.write("[]");
+                    fileWriter.flush();
+                    fileWriter.close();
+                }
                 jsonArray = JSONReader.getJSONArrayFromFile(Filename);
             }
             jsonArray.put(obj);

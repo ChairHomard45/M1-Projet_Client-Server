@@ -22,4 +22,8 @@ public final class PathsClass {
     public static String getFacturePath(){
         return "./src/main/java/Server/FacturesJson/";
     }
+
+    public static String getJSONFilePath(String date){
+        return "./src/main/java/Server/FacturesJson/" + getMagasinID() + date + ".json";
+    }
 }
