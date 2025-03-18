@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSONReader {
+public final class JSONReader {
     /**
      * @param fileName Nom du fichier à partir duquel on veut récupérer les données
      *                 à partir de la racine
