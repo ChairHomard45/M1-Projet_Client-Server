@@ -1,16 +1,15 @@
 package Common.Objects;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
 
 public class ObjectFacture {
-    private int reference_commande;
-    private float montant_commande;
-    private String date_facture;
-    private String mode_paiement;
-    private List<ObjectArticle> listes_articles;
+    private final int reference_commande;
+    private final float montant_commande;
+    private final String date_facture;
+    private final String mode_paiement;
+    private final List<ObjectArticle> listes_articles;
 
     public ObjectFacture(int refCom, float montCom, String dateFacture, String modePaiement, List<ObjectArticle> listesArticles) {
         this.reference_commande = refCom;
@@ -21,6 +20,11 @@ public class ObjectFacture {
     }
 
     public ObjectFacture(JSONObject object) {
+        this.reference_commande = object.getInt("referenceCommande");
+        this.montant_commande = object.getFloat("montantCommande");
+        this.mode_paiement = object.getString("modePaiement");
+        this.date_facture = object.getString("dateFacture");
+        this.listes_articles = ObjectArticle.toList(object.getJSONArray("listesArticles"));
     }
 
     public JSONObject toJSON() {

@@ -1,13 +1,11 @@
 package Server.Facture;
 
 import Common.Facture.IFactureAcheteur;
-import Common.Objects.ModePaiement;
 import Common.Objects.ObjectArticle;
 import Common.Objects.ObjectFacture;
 import Server.Database.BD;
 import Server.Utils.JSONAppend;
 import Server.Utils.PathsClass;
-import org.json.JSONObject;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -18,6 +16,7 @@ import java.util.Objects;
 
 public class FactureAcheteurImpl implements IFactureAcheteur {
     /**
+     * Payer la commande et créer une facture.
      * @param refCommande Reférence de la commande à payer
      */
     @Override
