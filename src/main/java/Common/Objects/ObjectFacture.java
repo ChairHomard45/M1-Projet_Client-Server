@@ -2,9 +2,13 @@ package Common.Objects;
 
 import org.json.JSONObject;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
-public class ObjectFacture {
+public class ObjectFacture implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2L;
     private final int reference_commande;
     private final float montant_commande;
     private final String date_facture;
@@ -20,11 +24,11 @@ public class ObjectFacture {
     }
 
     public ObjectFacture(JSONObject object) {
-        this.reference_commande = object.getInt("referenceCommande");
-        this.montant_commande = object.getFloat("montantCommande");
-        this.mode_paiement = object.getString("modePaiement");
-        this.date_facture = object.getString("dateFacture");
-        this.listes_articles = ObjectArticle.toList(object.getJSONArray("listesArticles"));
+        this.reference_commande = object.getInt("reference_commande");
+        this.montant_commande = object.getFloat("montant_commande");
+        this.mode_paiement = object.getString("mode_paiement");
+        this.date_facture = object.getString("date_facture");
+        this.listes_articles = ObjectArticle.toList(object.getJSONArray("listes_articles"));
     }
 
     public JSONObject toJSON() {
@@ -35,5 +39,13 @@ public class ObjectFacture {
         obj.put("montant_commande", montant_commande);
         obj.put("reference_commande", reference_commande);
         return obj;
+    }
+
+    public String toString() {
+        return "refF : " + reference_commande + " - " +
+                "MontantF : " + montant_commande + " - " +
+                "DateF : " + date_facture + " - " +
+                "ModePaiementF : " + mode_paiement + " - " +
+                "ListeArticleF : " + listes_articles + "\n";
     }
 }

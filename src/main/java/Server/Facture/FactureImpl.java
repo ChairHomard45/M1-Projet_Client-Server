@@ -2,7 +2,9 @@ package Server.Facture;
 
 import Common.Facture.IFacture;
 import Common.Objects.ObjectFacture;
+import Server.Utils.DateChecker;
 import Server.Utils.JSONReader;
+import Server.Utils.PathsClass;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,10 +16,15 @@ public class FactureImpl implements IFacture {
      */
     @Override
     public ObjectFacture consulterFacture(int refCommande, String date) {
-        JSONArray jsonArray = JSONReader.getJSONArrayFromFile(date);
+        if (!DateChecker.isDate(date)) {
+            return null;
+        }
+        String filename = PathsClass.getFacturePath() + PathsClass.getMagasinID() + date + ".json";
+
+        JSONArray jsonArray = JSONReader.getJSONArrayFromFile(filename);
 
         for (JSONObject obj : JSONReader.getListFromArray(jsonArray)) {
-            if (obj.getInt("referenceCommande") == refCommande) {
+            if (obj.getInt("reference_commande") == refCommande) {
                 return new ObjectFacture(obj);
             }
         }

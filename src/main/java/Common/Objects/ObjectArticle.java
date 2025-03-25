@@ -3,10 +3,14 @@ package Common.Objects;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectArticle {
+public class ObjectArticle implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2L;
     private final String referenceArticle;
     private final String nomArticle;
     private final String familleArticle;

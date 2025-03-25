@@ -10,9 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
-public class ArticleAcheteur implements IArticleAcheteur {
+public class ArticleAcheteurImpl implements IArticleAcheteur {
 
     /**
      * @param refArticle reference Article
@@ -41,6 +40,7 @@ public class ArticleAcheteur implements IArticleAcheteur {
             pS.setInt(1, refCommande);
             rs = pS.executeQuery();
             rs.next();
+            if (rs.getString("status_commande").equals("Terminer")) return null;
             float montant_commande = rs.getFloat("montant_commande");
 
             // Decrementer le stock de l'article acheter

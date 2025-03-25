@@ -22,9 +22,11 @@ public class FactureAcheteurImpl implements IFactureAcheteur {
     @Override
     public int payerFacture(int refCommande, String modePaiement) {
         Connection con = BD.getInstance().getConnection();
+        float montCom = 0;
         String dateActuel = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
         PreparedStatement pS;
         ResultSet rs;
+
         try {
             pS = con.prepareStatement(
                     "SELECT status_commande " +
@@ -60,8 +62,6 @@ public class FactureAcheteurImpl implements IFactureAcheteur {
             );
             pS.setInt(1, refCommande);
             rs = pS.executeQuery();
-            float montCom = 0;
-
 
             while (rs.next()) {
                 montCom = rs.getFloat("montant_commande");
