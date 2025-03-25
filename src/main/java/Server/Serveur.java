@@ -1,6 +1,7 @@
 package Server;
 
 import Common.CalculCA.ICalculCA;
+import Server.Article.ArticleAcheteur;
 import Server.CalculCA.CalculCAImpl;
 import Server.Database.BD;
 import Server.Facture.FactureAcheteurImpl;
@@ -9,16 +10,19 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class Serveur extends CalculCAImpl {
+public class Serveur {
     public static void main(String[] args) {
         BD.getInstance().connexion();
-        FactureAcheteurImpl factureAcheteurImpl = new FactureAcheteurImpl();
-        factureAcheteurImpl.payerFacture(2,"");
+        // FactureAcheteurImpl factureAcheteurImpl = new FactureAcheteurImpl();
+        // factureAcheteurImpl.payerFacture(2,"");
+        ArticleAcheteur acheteur = new ArticleAcheteur();
+        acheteur.acheterArticle(1, "FFFEEE", 1);
         //initRMI();
     }
 
     private static void initRMI() {
         try {
+            System.out.println("Serveur initRMI");
             CalculCAImpl calculCA = new CalculCAImpl();
             ICalculCA stub = (ICalculCA) UnicastRemoteObject.exportObject(calculCA, 0);
             Registry reg = LocateRegistry.getRegistry();

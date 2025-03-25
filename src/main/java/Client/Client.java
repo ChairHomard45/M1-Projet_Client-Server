@@ -17,7 +17,7 @@ public class Client {
 
             // Recherche dans le registre de l'objet distant
             ICalculCA stub = (ICalculCA) reg.lookup("CalculCAImpl");
-            System.out.println("CA Test" + stub.getCA("12"));
+            System.out.println("CA Test " + stub.getCA("12"));
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }

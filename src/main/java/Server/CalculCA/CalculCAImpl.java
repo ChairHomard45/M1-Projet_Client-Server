@@ -16,7 +16,7 @@ public class CalculCAImpl implements ICalculCA {
      * @return le chiffre d'affaires ou Zero si le format n'est pas correct
      */
     public float getCA(String date) {
-        if (DateChecker.isDate(date)) {
+        if (!DateChecker.isDate(date)) {
             return 0;
         }
 
