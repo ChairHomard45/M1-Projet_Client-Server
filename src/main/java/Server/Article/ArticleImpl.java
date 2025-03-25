@@ -13,6 +13,10 @@ import java.util.List;
 
 public class ArticleImpl implements IArticle
 {
+    /**
+     * @param refArticle référence de l'article
+     * @return un objet Article avec les informations
+     */
     @Override
     public ObjectArticle getInfoArticle(String refArticle)
     {
@@ -29,11 +33,9 @@ public class ArticleImpl implements IArticle
             );
             ps.setString(1, refArticle);
             rs = ps.executeQuery();
+            rs.next();
 
-            if(!rs.next())
-            {
-                return null;
-            }
+            if(rs.getRow() == 0) return null;
 
             ObjectArticle objA = new ObjectArticle(
                 rs.getString("reference_article"),
@@ -55,6 +57,10 @@ public class ArticleImpl implements IArticle
         }
     }
 
+    /**
+     * @param refFamille référence de la famille d'articles
+     * @return une liste des références d'articles de cette famille
+     */
     @Override
     public List<String> getRefsArticles(String refFamille)
     {

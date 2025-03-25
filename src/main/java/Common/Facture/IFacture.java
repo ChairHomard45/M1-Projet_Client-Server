@@ -2,6 +2,9 @@ package Common.Facture;
 
 import Common.Objects.ObjectFacture;
 
-public interface IFacture {
-    ObjectFacture consulterFacture(int refCommanden, String date);
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface IFacture extends Remote {
+    ObjectFacture consulterFacture(int refCommanden, String date) throws RemoteException;
 }
