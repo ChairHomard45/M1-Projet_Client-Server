@@ -54,4 +54,13 @@ public class ObjectArticle {
         );
         return array;
     }
+
+    public String toString()
+    {
+        return "refA : " + referenceArticle + " - " +
+                "nomA : " + nomArticle + " - " +
+                "famA : " + familleArticle + " - " +
+                "prix : " + prixUnitaire + " - " +
+                "qteA : " + Qte + "\n";
+    }
 }
