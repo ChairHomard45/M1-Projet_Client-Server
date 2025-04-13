@@ -33,6 +33,14 @@ public class ObjectArticle implements Serializable {
         this.Qte = object.getInt("quantite_stock");
     }
 
+    public String getReferenceArticle() {
+        return referenceArticle;
+    }
+
+    public int getQte(){
+        return Qte;
+    }
+
     public static List<ObjectArticle> toList(JSONArray jsonArray) {
         List<ObjectArticle> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -59,12 +67,17 @@ public class ObjectArticle implements Serializable {
         return array;
     }
 
-    public String toString()
+    public String toStringList()
     {
         return "refA : " + referenceArticle + " - " +
                 "nomA : " + nomArticle + " - " +
                 "famA : " + familleArticle + " - " +
                 "prix : " + prixUnitaire + " - " +
                 "qteA : " + Qte + "\n";
+    }
+
+    public String toString()
+    {
+        return nomArticle + " - Qte : " + Qte + " - PrixU : " + prixUnitaire + " - PrixT : " + Qte * prixUnitaire + "\n";
     }
 }

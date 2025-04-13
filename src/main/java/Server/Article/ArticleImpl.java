@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 public class ArticleImpl implements IArticle
@@ -83,6 +85,44 @@ public class ArticleImpl implements IArticle
             while (rs.next())
             {
                 refsArticles.add(rs.getString("reference_article"));
+            }
+
+            rs.close();
+            ps.close();
+
+            return refsArticles;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * @return un dictionnaire des références d'articles
+     */
+    @Override
+    public Dictionary<String, String> getRefsArticles()
+    {
+        Connection con = BD.getInstance().getConnection();
+        PreparedStatement ps;
+        ResultSet rs;
+
+        try
+        {
+            ps = con.prepareStatement(
+                    "SELECT reference_article, nom_article " +
+                            "FROM article " +
+                            "WHERE quantite_stock > 0"
+            );
+            rs = ps.executeQuery();
+
+            Hashtable<String, String> refsArticles = new Hashtable<>();
+
+            while (rs.next())
+            {
+                refsArticles.put(rs.getString("reference_article"), rs.getString("nom_article"));
             }
 
             rs.close();
