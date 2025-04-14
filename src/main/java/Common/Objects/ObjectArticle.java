@@ -76,6 +76,18 @@ public class ObjectArticle implements Serializable {
                 "qteA : " + Qte + "\n";
     }
 
+    public String toStringTextPane()
+    {
+        return "<html><body style='text-align:center; font-size:2em'>" +
+                "<div style='border:2px solid black; padding:20px;'>" +
+                "Référence Article : " + referenceArticle + "<br>" +
+                "Nom Article : " + nomArticle + "<br>" +
+                "Famille Article : " + familleArticle + "<br>" +
+                "Prix : " + prixUnitaire + "<br>" +
+                "Quantité en stock : " + Qte + "<br>" +
+                "<div></body></html>";
+    }
+
     public String toString()
     {
         return nomArticle + " - Qte : " + Qte + " - PrixU : " + prixUnitaire + " - PrixT : " + Qte * prixUnitaire + "\n";

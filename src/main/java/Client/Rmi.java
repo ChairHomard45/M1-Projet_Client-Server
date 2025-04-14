@@ -14,12 +14,12 @@ import java.rmi.registry.Registry;
 
 public class Rmi {
     private static Rmi _instance = null;
-    private ICalculCA stubCalculCA;
-    private IArticleAcheteur stubArticleAcheteur;
-    private IArticle stubArticle;
-    private IArticleEmployer stubArticleEmployer;
-    private IFactureAcheteur stubFactureAcheteur;
-    private IFacture stubFacture;
+    private final ICalculCA stubCalculCA;
+    private final IArticleAcheteur stubArticleAcheteur;
+    private final IArticle stubArticle;
+    private final IArticleEmployer stubArticleEmployer;
+    private final IFactureAcheteur stubFactureAcheteur;
+    private final IFacture stubFacture;
 
     public synchronized static Rmi GetInstance() {
         if (_instance == null) _instance = new Rmi();
@@ -28,17 +28,16 @@ public class Rmi {
 
     private Rmi() {
         // Récupérer le registre
-        Registry reg = null;
         try {
-            reg = LocateRegistry.getRegistry(null);
+            Registry reg = LocateRegistry.getRegistry(null);
 
-        // Recherche dans le registre de l'objet distant
-        stubCalculCA = (ICalculCA) reg.lookup("CalculCAImpl");
-        stubArticleAcheteur = (IArticleAcheteur) reg.lookup("ArticleAcheteurImpl");
-        stubArticle = (IArticle) reg.lookup("ArticleImpl");
-        stubArticleEmployer = (IArticleEmployer) reg.lookup("ArticleEmployerImpl");
-        stubFactureAcheteur = (IFactureAcheteur) reg.lookup("FactureAcheteurImpl");
-        stubFacture = (IFacture) reg.lookup("FactureImpl");
+            // Recherche dans le registre de l'objet distant
+            stubCalculCA = (ICalculCA) reg.lookup("CalculCAImpl");
+            stubArticleAcheteur = (IArticleAcheteur) reg.lookup("ArticleAcheteurImpl");
+            stubArticle = (IArticle) reg.lookup("ArticleImpl");
+            stubArticleEmployer = (IArticleEmployer) reg.lookup("ArticleEmployerImpl");
+            stubFactureAcheteur = (IFactureAcheteur) reg.lookup("FactureAcheteurImpl");
+            stubFacture = (IFacture) reg.lookup("FactureImpl");
 
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);

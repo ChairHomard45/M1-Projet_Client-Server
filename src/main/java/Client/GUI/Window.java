@@ -30,6 +30,11 @@ public class Window extends JFrame {
     private JButton AcheterButton;
     private JButton buttonPayer;
     private JPanel PanelPayerCommande;
+    private JPanel InputRecherchePanel;
+    private JTextField InputRechercheArticle;
+    private JButton ButtonRechercheArticle;
+    private JPanel PanelDisplayArticle;
+    private JTextPane textArticleInfoPane;
 
     /**
      * Variable Privé pour les requètes.
@@ -168,7 +173,7 @@ public class Window extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rmi = Rmi.GetInstance();
-                int maxQte = 0;
+                int maxQte;
                 ObjectArticle obj;
                 if (ArticleJList.isSelectionEmpty()) {
                     JOptionPane.showMessageDialog(null, "La séléction ne doit pas être vide", "Info", JOptionPane.WARNING_MESSAGE);
@@ -223,6 +228,30 @@ public class Window extends JFrame {
                 }
             }
         });
+        ButtonRechercheArticle.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rmi = Rmi.GetInstance();
+                if (InputRechercheArticle.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                try {
+                    ObjectArticle retrievedArticle = rmi.getStubArticle().getInfoArticle(InputRechercheArticle.getText());
+                    if (retrievedArticle == null) {
+                        JOptionPane.showMessageDialog(null, "La référence donnée ne correspond a aucun article!", "Info", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    textArticleInfoPane.setText(retrievedArticle.toStringTextPane());
+                } catch (RemoteException ex){
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     private void createUIComponents() {
@@ -241,9 +270,7 @@ public class Window extends JFrame {
         slider.setPaintLabels(true);
 
         JLabel valueLabel = new JLabel("Quantité: " + slider.getValue());
-        slider.addChangeListener(e -> {
-            valueLabel.setText("Quantité: " + slider.getValue());
-        });
+        slider.addChangeListener(e -> valueLabel.setText("Quantité: " + slider.getValue()));
 
         panel.add(slider);
         panel.add(valueLabel); // 👈 Show selected value under the slider
