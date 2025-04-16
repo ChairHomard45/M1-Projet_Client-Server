@@ -48,4 +48,23 @@ public class ObjectFacture implements Serializable {
                 "ModePaiementF : " + mode_paiement + " - " +
                 "ListeArticleF : " + listes_articles + "\n";
     }
+
+    public String toStringTextPane() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html><body style='text-align:left; font-size:1.5em'>")
+                .append("<div>")
+                .append("Référence Facture : ").append(reference_commande).append(" <br> ")
+                .append("Montant Facture : ").append(montant_commande).append(" <br> ")
+                .append("Date de paiement : ").append(date_facture).append(" <br> ")
+                .append("Mode de Paiement : ").append(mode_paiement).append(" <br><br> ")
+                .append("Liste Articles :<br>");
+
+        for (ObjectArticle article : listes_articles) {
+            sb.append(article.toStringListing()).append("<br>");
+        }
+
+        sb.append("</div></body></html>");
+        return sb.toString();
+    }
+
 }

@@ -7,6 +7,7 @@ import Common.CalculCA.ICalculCA;
 import Common.Facture.IFacture;
 import Common.Facture.IFactureAcheteur;
 
+import javax.swing.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -40,6 +41,7 @@ public class Rmi {
             stubFacture = (IFacture) reg.lookup("FactureImpl");
 
         } catch (RemoteException | NotBoundException e) {
+            JOptionPane.showMessageDialog(null, "Aucune Connexion RMI possible", "Info", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }
     }

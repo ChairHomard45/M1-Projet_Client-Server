@@ -25,7 +25,7 @@ public class ObjectArticle implements Serializable {
         this.Qte = Qte;
     }
 
-    public ObjectArticle(JSONObject object){
+    public ObjectArticle(JSONObject object) {
         this.referenceArticle = object.getString("reference_article");
         this.nomArticle = object.getString("nom_article");
         this.familleArticle = object.getString("famille_article");
@@ -37,7 +37,7 @@ public class ObjectArticle implements Serializable {
         return referenceArticle;
     }
 
-    public int getQte(){
+    public int getQte() {
         return Qte;
     }
 
@@ -62,13 +62,12 @@ public class ObjectArticle implements Serializable {
     public static JSONArray toJSONArray(List<ObjectArticle> articles) {
         JSONArray array = new JSONArray();
         articles.forEach(article ->
-            array.put(article.toJSON())
+                array.put(article.toJSON())
         );
         return array;
     }
 
-    public String toStringList()
-    {
+    public String toStringList() {
         return "refA : " + referenceArticle + " - " +
                 "nomA : " + nomArticle + " - " +
                 "famA : " + familleArticle + " - " +
@@ -76,8 +75,7 @@ public class ObjectArticle implements Serializable {
                 "qteA : " + Qte + "\n";
     }
 
-    public String toStringTextPane()
-    {
+    public String toStringTextPane() {
         return "<html><body style='text-align:center; font-size:2em'>" +
                 "<div style='border:2px solid black; padding:20px;'>" +
                 "Référence Article : " + referenceArticle + "<br>" +
@@ -88,8 +86,19 @@ public class ObjectArticle implements Serializable {
                 "<div></body></html>";
     }
 
-    public String toString()
-    {
+    public String toStringListing() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div>")
+                .append("&emsp;&emsp;Référence Article : ").append(referenceArticle).append("<br>")
+                .append("&emsp;&emsp;Nom Article : ").append(nomArticle).append("<br>")
+                .append("&emsp;&emsp;Famille Article : ").append(familleArticle).append("<br>")
+                .append("&emsp;&emsp;Prix : ").append(prixUnitaire).append("<br>")
+                .append("&emsp;&emsp;Qte : ").append(Qte).append("<br>")
+                .append("</div>");
+        return sb.toString();
+    }
+
+    public String toString() {
         return nomArticle + " - Qte : " + Qte + " - PrixU : " + prixUnitaire + " - PrixT : " + Qte * prixUnitaire + "\n";
     }
 }

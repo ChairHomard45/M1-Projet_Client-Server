@@ -3,6 +3,7 @@ package Client.GUI;
 import Client.Rmi;
 import Common.Objects.ModePaiement;
 import Common.Objects.ObjectArticle;
+import Common.Objects.ObjectFacture;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,24 +36,32 @@ public class Window extends JFrame {
     private JButton ButtonRechercheArticle;
     private JPanel PanelDisplayArticle;
     private JTextPane textArticleInfoPane;
+    private JPanel ConsultFacturePanel;
+    private JPanel InputTicketDeCaissePanel;
+    private JTextField InputTicketReference;
+    private JButton ButtonRechercheTicket;
+    private JPanel DisplayTicketPanel;
+    private JTextPane textFacturePane;
+    private JTextField InputDateTicket;
 
     /**
      * Variable Privé pour les requètes.
      */
-    private Rmi rmi;
+    private final Rmi rmi;
     private int refCommande;
     private Hashtable<String, String> refsArticlesList;
     private List<ObjectArticle> ArticlesDeLaCommandeList;
     private DefaultListModel<ObjectArticle> articleListModel;
 
     public Window() {
+        rmi = Rmi.GetInstance();
         ReferenceCommandeButton.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                rmi = Rmi.GetInstance();
+
                 articleListModel = new DefaultListModel<>();
                 if (ReferenceCommande.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
@@ -102,15 +111,13 @@ public class Window extends JFrame {
                 }
             }
         });
-
-
         buttonPayer.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                rmi = Rmi.GetInstance();
+
                 if (ArticlesDeLaCommandeList.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "La commande ne doit pas être vide", "Info", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -165,14 +172,13 @@ public class Window extends JFrame {
                 }
             }
         });
-
         AcheterButton.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                rmi = Rmi.GetInstance();
+
                 int maxQte;
                 ObjectArticle obj;
                 if (ArticleJList.isSelectionEmpty()) {
@@ -234,7 +240,6 @@ public class Window extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                rmi = Rmi.GetInstance();
                 if (InputRechercheArticle.getText().isEmpty()){
                     JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -247,6 +252,39 @@ public class Window extends JFrame {
                         return;
                     }
                     textArticleInfoPane.setText(retrievedArticle.toStringTextPane());
+                } catch (RemoteException ex){
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        ButtonRechercheTicket.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (InputTicketReference.getText().isEmpty() && InputDateTicket.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Les champs doivent être remplie! \n RAPPEL Format Reference Ticket : numbers only \n RAPPEL Format Date : dd-mm-yyyy ", "Info", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                if (!InputTicketReference.getText().matches("^[0-9]*$")) {
+                    JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres!", "Info", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                if (!InputDateTicket.getText().matches("^[0-9]{2}-[0-9]{2}-[0-9]{4}$")) {
+                    JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Info", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                try {
+                    ObjectFacture Facture = rmi.getStubFacture().consulterFacture(Integer.parseInt(InputTicketReference.getText()),InputDateTicket.getText());
+                    if (Facture == null) {
+                        JOptionPane.showMessageDialog(null, "La référence ou la date donnée ne correspondent a aucune facture!", "Info", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    textFacturePane.setText(Facture.toStringTextPane());
                 } catch (RemoteException ex){
                     throw new RuntimeException(ex);
                 }
@@ -290,7 +328,6 @@ public class Window extends JFrame {
         return null;
     }
 
-
     public static <K, V> K getKeyByValue(Hashtable<K, V> table, V value) {
         for (K key : table.keySet()) {
             if (table.get(key).equals(value)) {
@@ -299,7 +336,6 @@ public class Window extends JFrame {
         }
         return null;
     }
-
 
     private void ClearCommande() {
         System.out.println("Clear commande");
@@ -333,5 +369,4 @@ public class Window extends JFrame {
 
         JOptionPane.showMessageDialog(null, "Commande réinitialisée.");
     }
-
 }
