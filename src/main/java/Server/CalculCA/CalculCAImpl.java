@@ -18,7 +18,7 @@ public class CalculCAImpl implements ICalculCA {
     @Override
     public float getCA(String date) {
         if (!DateChecker.isDate(date)) {
-            return 0;
+            return -1;
         }
 
         String filename = PathsClass.getFacturePath() + PathsClass.getMagasinID() + date + ".json";

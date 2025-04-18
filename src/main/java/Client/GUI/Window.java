@@ -48,6 +48,11 @@ public class Window extends JFrame {
     private JTabbedPane EmployerTabbes;
     private JPanel ChiffreAffPanel;
     private JPanel AjoutArticlePanel;
+    private JPanel InputPanelChiffreAffaire;
+    private JPanel DisplayChiffreAffairePanel;
+    private JTextPane textPaneChiffreAffaire;
+    private JTextField InputTextDateChiffreAffaire;
+    private JButton ButtonChiffreAffaire;
 
     /**
      * Variable Privé pour les requètes.
@@ -60,63 +65,27 @@ public class Window extends JFrame {
 
     public Window() {
         rmi = Rmi.GetInstance();
+        // Reference
         ReferenceCommandeButton.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                articleCommandeListModel = new DefaultListModel<>();
-
-                if (ReferenceCommande.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                if (!ReferenceCommande.getText().matches("^[0-9]{1,9}$")) {
-                    JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres et doit contenir 1 à 9 chiffres!", "Info", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                try {
-                    int resultFonction = rmi.getStubArticleAcheteur().creerCommande(Integer.parseInt(ReferenceCommande.getText()));
-                    if (resultFonction == -1) {
-                        JOptionPane.showMessageDialog(null, "Une erreur s'est produite pendant la création de la commande.", "Info", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                    if (resultFonction == 2) {
-                        JOptionPane.showMessageDialog(null, "L'Id de commande qui vous essayer de créer existe déjà et est terminer", "Info", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-
-                    if (resultFonction == 1 || resultFonction == 0) {
-
-                        ReferenceCommande.setEnabled(false);
-                        ReferenceCommandeButton.setEnabled(false);
-                        ContenuCommandePanel.setVisible(true);
-                        PanelPayerCommande.setVisible(true);
-                        PanelFiltre.setVisible(true);
-
-                        refCommande = Integer.parseInt(ReferenceCommande.getText());
-                        refsArticlesList = (Hashtable<String, String>) rmi.getStubArticle().getRefsArticles();
-                        ArticleJList.setListData(refsArticlesList.values().toArray(new String[0]));
-                    }
-
-                    if (resultFonction == 1) {
-                        ArticlesDeLaCommandeList = rmi.getStubArticleAcheteur().consulterCommande(refCommande);
-                        JOptionPane.showMessageDialog(null, "reprise de commande.", "Info", JOptionPane.INFORMATION_MESSAGE);
-                        for (ObjectArticle article : ArticlesDeLaCommandeList) {
-                            articleCommandeListModel.addElement(article);
-                        }
-                    }
-                    if (resultFonction == 0) {
-                        JOptionPane.showMessageDialog(null, "Commande créer avec succès.", "Info", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                    ArticlesDeLaCommande.setModel(articleCommandeListModel);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
+                CreateOrGetCommandeActionPerformed(e);
             }
         });
+        ReferenceCommande.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CreateOrGetCommandeActionPerformed(e);
+            }
+        });
+
+        // Paiement
         buttonPayer.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
@@ -178,6 +147,7 @@ public class Window extends JFrame {
                 }
             }
         });
+
         AcheterButton.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
@@ -240,62 +210,56 @@ public class Window extends JFrame {
                 }
             }
         });
+
+        // Recerche Article
         ButtonRechercheArticle.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (InputRechercheArticle.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                try {
-                    ObjectArticle retrievedArticle = rmi.getStubArticle().getInfoArticle(InputRechercheArticle.getText());
-                    if (retrievedArticle == null) {
-                        JOptionPane.showMessageDialog(null, "La référence donnée ne correspond a aucun article!", "Info", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                    textArticleInfoPane.setText(retrievedArticle.toStringTextPane());
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
+                RechercheArticleActionPerformed(e);
             }
         });
+        InputRechercheArticle.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RechercheArticleActionPerformed(e);
+            }
+        });
+
+        // Recherche Ticket
         ButtonRechercheTicket.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (InputTicketReference.getText().isEmpty() && InputDateTicket.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Les champs doivent être remplie! \n RAPPEL Format Reference Ticket : numbers only \n RAPPEL Format Date : dd-mm-yyyy ", "Info", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                if (!InputTicketReference.getText().matches("^[0-9]*$")) {
-                    JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres!", "Info", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                if (!InputDateTicket.getText().matches("^[0-9]{2}-[0-9]{2}-[0-9]{4}$")) {
-                    JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Info", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                try {
-                    ObjectFacture Facture = rmi.getStubFacture().consulterFacture(Integer.parseInt(InputTicketReference.getText()), InputDateTicket.getText());
-                    if (Facture == null) {
-                        JOptionPane.showMessageDialog(null, "La référence ou la date donnée ne correspondent a aucune facture!", "Info", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                    textFacturePane.setText(Facture.toStringTextPane());
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
+                RechercheTicketActionPerformed(e);
             }
         });
+        InputTicketReference.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RechercheTicketActionPerformed(e);
+            }
+        });
+        InputDateTicket.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RechercheTicketActionPerformed(e);
+            }
+        });
+
         textFiltreFamille.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
@@ -318,12 +282,153 @@ public class Window extends JFrame {
                 }
             }
         });
+
+        // Chiffre D'affaire
+        InputTextDateChiffreAffaire.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chiffreAffaireActionPerformed(e);
+            }
+        });
+        ButtonChiffreAffaire.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chiffreAffaireActionPerformed(e);
+            }
+        });
+
     }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
         contentPane = new JPanel();
         setContentPane(contentPane);
+    }
+
+    private void CreateOrGetCommandeActionPerformed(java.awt.event.ActionEvent evt) {
+        articleCommandeListModel = new DefaultListModel<>();
+
+        if (ReferenceCommande.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!ReferenceCommande.getText().matches("^[0-9]{1,9}$")) {
+            JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres et doit contenir 1 à 9 chiffres!", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        try {
+            int resultFonction = rmi.getStubArticleAcheteur().creerCommande(Integer.parseInt(ReferenceCommande.getText()));
+            if (resultFonction == -1) {
+                JOptionPane.showMessageDialog(null, "Une erreur s'est produite pendant la création de la commande.", "Info", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (resultFonction == 2) {
+                JOptionPane.showMessageDialog(null, "L'Id de commande qui vous essayer de créer existe déjà et est terminer", "Info", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (resultFonction == 1 || resultFonction == 0) {
+
+                ReferenceCommande.setEnabled(false);
+                ReferenceCommandeButton.setEnabled(false);
+                ContenuCommandePanel.setVisible(true);
+                PanelPayerCommande.setVisible(true);
+                PanelFiltre.setVisible(true);
+
+                refCommande = Integer.parseInt(ReferenceCommande.getText());
+                refsArticlesList = (Hashtable<String, String>) rmi.getStubArticle().getRefsArticles();
+                ArticleJList.setListData(refsArticlesList.values().toArray(new String[0]));
+            }
+
+            if (resultFonction == 1) {
+                ArticlesDeLaCommandeList = rmi.getStubArticleAcheteur().consulterCommande(refCommande);
+                JOptionPane.showMessageDialog(null, "reprise de commande.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                for (ObjectArticle article : ArticlesDeLaCommandeList) {
+                    articleCommandeListModel.addElement(article);
+                }
+            }
+            if (resultFonction == 0) {
+                JOptionPane.showMessageDialog(null, "Commande créer avec succès.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+            ArticlesDeLaCommande.setModel(articleCommandeListModel);
+        } catch (RemoteException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void RechercheArticleActionPerformed(java.awt.event.ActionEvent evt) {
+        if (InputRechercheArticle.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            ObjectArticle retrievedArticle = rmi.getStubArticle().getInfoArticle(InputRechercheArticle.getText());
+            if (retrievedArticle == null) {
+                JOptionPane.showMessageDialog(null, "La référence donnée ne correspond a aucun article!", "Info", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            textArticleInfoPane.setText(retrievedArticle.toStringTextPane());
+        } catch (RemoteException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void RechercheTicketActionPerformed(java.awt.event.ActionEvent evt) {
+        if (InputTicketReference.getText().isEmpty() && InputDateTicket.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Les champs doivent être remplie! \n RAPPEL Format Reference Ticket : numbers only \n RAPPEL Format Date : dd-mm-yyyy ", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!InputTicketReference.getText().matches("^[0-9]*$")) {
+            JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres!", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!InputDateTicket.getText().matches("^[0-9]{2}-[0-9]{2}-[0-9]{4}$")) {
+            JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            ObjectFacture Facture = rmi.getStubFacture().consulterFacture(Integer.parseInt(InputTicketReference.getText()), InputDateTicket.getText());
+            if (Facture == null) {
+                JOptionPane.showMessageDialog(null, "La référence ou la date donnée ne correspondent a aucune facture!", "Info", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            textFacturePane.setText(Facture.toStringTextPane());
+        } catch (RemoteException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void chiffreAffaireActionPerformed(java.awt.event.ActionEvent evt) {
+        if (InputTextDateChiffreAffaire.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Le champ doit être remplie! \n RAPPEL Format Date : dd-mm-yyyy ", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!InputTextDateChiffreAffaire.getText().matches("^[0-9]{2}-[0-9]{2}-[0-9]{4}$")) {
+            JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            float ChiffreAffaire = rmi.getStubCalculCA().getCA(InputTextDateChiffreAffaire.getText());
+            if (ChiffreAffaire == -1) {
+                JOptionPane.showMessageDialog(null, "La date " + InputTextDateChiffreAffaire.getText() + " n'existe pas!", "Info", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            textPaneChiffreAffaire.setText("<html><body style='text-align:center; font-size:1.5em'> Chiffre d'affaire pour la date : " + InputTextDateChiffreAffaire.getText()  + "<br> Chiffre d'affaire : " + ChiffreAffaire + "€ </div></body></html>");
+        } catch (RemoteException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private Integer showQuantitySelectionDialog(int maxQuantity, String message, String title) {
