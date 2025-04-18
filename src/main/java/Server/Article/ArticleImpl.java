@@ -64,7 +64,7 @@ public class ArticleImpl implements IArticle
      * @return une liste des références d'articles de cette famille
      */
     @Override
-    public List<String> getRefsArticles(String refFamille)
+    public Dictionary<String, String> getRefsArticles(String refFamille)
     {
         Connection con = BD.getInstance().getConnection();
         PreparedStatement ps;
@@ -73,18 +73,18 @@ public class ArticleImpl implements IArticle
         try
         {
             ps = con.prepareStatement(
-                "SELECT reference_article " +
+                "SELECT reference_article, nom_article " +
                     "FROM article " +
                     "WHERE famille_article = ? AND quantite_stock > 0"
             );
             ps.setString(1, refFamille);
             rs = ps.executeQuery();
 
-            List<String> refsArticles = new ArrayList<>();
+            Hashtable<String, String> refsArticles = new Hashtable<>();
 
             while (rs.next())
             {
-                refsArticles.add(rs.getString("reference_article"));
+                refsArticles.put(rs.getString("reference_article"), rs.getString("nom_article"));
             }
 
             rs.close();

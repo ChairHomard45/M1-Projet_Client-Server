@@ -43,6 +43,11 @@ public class Window extends JFrame {
     private JPanel DisplayTicketPanel;
     private JTextPane textFacturePane;
     private JTextField InputDateTicket;
+    private JTextField textFiltreFamille;
+    private JPanel PanelFiltre;
+    private JTabbedPane EmployerTabbes;
+    private JPanel ChiffreAffPanel;
+    private JPanel AjoutArticlePanel;
 
     /**
      * Variable Privé pour les requètes.
@@ -51,7 +56,7 @@ public class Window extends JFrame {
     private int refCommande;
     private Hashtable<String, String> refsArticlesList;
     private List<ObjectArticle> ArticlesDeLaCommandeList;
-    private DefaultListModel<ObjectArticle> articleListModel;
+    private DefaultListModel<ObjectArticle> articleCommandeListModel;
 
     public Window() {
         rmi = Rmi.GetInstance();
@@ -62,7 +67,8 @@ public class Window extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                articleListModel = new DefaultListModel<>();
+                articleCommandeListModel = new DefaultListModel<>();
+
                 if (ReferenceCommande.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -88,24 +94,24 @@ public class Window extends JFrame {
                         ReferenceCommandeButton.setEnabled(false);
                         ContenuCommandePanel.setVisible(true);
                         PanelPayerCommande.setVisible(true);
+                        PanelFiltre.setVisible(true);
 
                         refCommande = Integer.parseInt(ReferenceCommande.getText());
                         refsArticlesList = (Hashtable<String, String>) rmi.getStubArticle().getRefsArticles();
                         ArticleJList.setListData(refsArticlesList.values().toArray(new String[0]));
-
                     }
 
                     if (resultFonction == 1) {
                         ArticlesDeLaCommandeList = rmi.getStubArticleAcheteur().consulterCommande(refCommande);
                         JOptionPane.showMessageDialog(null, "reprise de commande.", "Info", JOptionPane.INFORMATION_MESSAGE);
                         for (ObjectArticle article : ArticlesDeLaCommandeList) {
-                            articleListModel.addElement(article);
+                            articleCommandeListModel.addElement(article);
                         }
                     }
                     if (resultFonction == 0) {
                         JOptionPane.showMessageDialog(null, "Commande créer avec succès.", "Info", JOptionPane.INFORMATION_MESSAGE);
                     }
-                    ArticlesDeLaCommande.setModel(articleListModel);
+                    ArticlesDeLaCommande.setModel(articleCommandeListModel);
                 } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -197,7 +203,7 @@ public class Window extends JFrame {
                     throw new RuntimeException(ex);
                 }
 
-                Integer selectedQuantity = showQuantitySelectionDialog(maxQte);
+                Integer selectedQuantity = showQuantitySelectionDialog(maxQte, "Choisissez le nombre d'articles à acheter :", "Quantité à acheter");
 
                 if (selectedQuantity == null) {
                     System.out.println("Achat annulé.");
@@ -220,13 +226,13 @@ public class Window extends JFrame {
                     if (existingIndex != -1) {
                         // Replace in both the list and the UI model
                         ArticlesDeLaCommandeList.set(existingIndex, articleAcheter);
-                        articleListModel.set(existingIndex, articleAcheter);
+                        articleCommandeListModel.set(existingIndex, articleAcheter);
                     } else {
                         // Add new if not already in list
                         ArticlesDeLaCommandeList.add(articleAcheter);
-                        articleListModel.addElement(articleAcheter);
+                        articleCommandeListModel.addElement(articleAcheter);
                     }
-                    ArticlesDeLaCommande.setModel(articleListModel);
+                    ArticlesDeLaCommande.setModel(articleCommandeListModel);
                     JOptionPane.showMessageDialog(null, "Achat effectué avec succès !");
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
@@ -240,7 +246,7 @@ public class Window extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (InputRechercheArticle.getText().isEmpty()){
+                if (InputRechercheArticle.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -252,7 +258,7 @@ public class Window extends JFrame {
                         return;
                     }
                     textArticleInfoPane.setText(retrievedArticle.toStringTextPane());
-                } catch (RemoteException ex){
+                } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -263,7 +269,7 @@ public class Window extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (InputTicketReference.getText().isEmpty() && InputDateTicket.getText().isEmpty()){
+                if (InputTicketReference.getText().isEmpty() && InputDateTicket.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Les champs doivent être remplie! \n RAPPEL Format Reference Ticket : numbers only \n RAPPEL Format Date : dd-mm-yyyy ", "Info", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -279,13 +285,35 @@ public class Window extends JFrame {
                 }
 
                 try {
-                    ObjectFacture Facture = rmi.getStubFacture().consulterFacture(Integer.parseInt(InputTicketReference.getText()),InputDateTicket.getText());
+                    ObjectFacture Facture = rmi.getStubFacture().consulterFacture(Integer.parseInt(InputTicketReference.getText()), InputDateTicket.getText());
                     if (Facture == null) {
                         JOptionPane.showMessageDialog(null, "La référence ou la date donnée ne correspondent a aucune facture!", "Info", JOptionPane.WARNING_MESSAGE);
                         return;
                     }
                     textFacturePane.setText(Facture.toStringTextPane());
-                } catch (RemoteException ex){
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        textFiltreFamille.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (textFiltreFamille.getText().isEmpty()) {
+                        refsArticlesList = (Hashtable<String, String>) rmi.getStubArticle().getRefsArticles();
+                    } else {
+                        refsArticlesList = (Hashtable<String, String>) rmi.getStubArticle().getRefsArticles(textFiltreFamille.getText());
+                    }
+                    if (refsArticlesList == null) {
+                        JOptionPane.showMessageDialog(null, "Erreur avec la récupération des articles de la famille " + textFiltreFamille.getText(), "Info", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    ArticleJList.setListData(refsArticlesList.values().toArray(new String[0]));
+                } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -298,9 +326,9 @@ public class Window extends JFrame {
         setContentPane(contentPane);
     }
 
-    private Integer showQuantitySelectionDialog(int maxQuantity) {
+    private Integer showQuantitySelectionDialog(int maxQuantity, String message, String title) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        panel.add(new JLabel("Choisissez le nombre d'articles à acheter :"));
+        panel.add(new JLabel(message));
 
         JSlider slider = new JSlider(1, maxQuantity);
         slider.setMajorTickSpacing(Math.max(1, maxQuantity / 5));
@@ -316,7 +344,7 @@ public class Window extends JFrame {
         int result = JOptionPane.showConfirmDialog(
                 null,
                 panel,
-                "Quantité à acheter",
+                title,
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE
         );
@@ -348,8 +376,8 @@ public class Window extends JFrame {
         ArticleJList.setListData(new String[0]);
 
         // Clear selected articles and UI list
-        if (articleListModel != null) {
-            articleListModel.clear();
+        if (articleCommandeListModel != null) {
+            articleCommandeListModel.clear();
         }
         if (ArticlesDeLaCommandeList != null) {
             ArticlesDeLaCommandeList.clear();
@@ -358,6 +386,7 @@ public class Window extends JFrame {
         // Hide command-related panels
         ContenuCommandePanel.setVisible(false);
         PanelPayerCommande.setVisible(false);
+        PanelFiltre.setVisible(false);
 
         // Reset internal variables
         refCommande = 0;
