@@ -144,13 +144,14 @@ public class Window extends JFrame {
                         JOptionPane.showMessageDialog(null, "Paiement effectué avec succès !");
                         ClearCommande();
                     } catch (RemoteException ex) {
-                        ex.printStackTrace();
+                        System.err.println(ex.getMessage());
                         JOptionPane.showMessageDialog(null, "Erreur lors du paiement.", "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
         });
 
+        // Ajout d'article à la commande
         AcheterButton.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
@@ -208,13 +209,13 @@ public class Window extends JFrame {
                     ArticlesDeLaCommande.setModel(articleCommandeListModel);
                     JOptionPane.showMessageDialog(null, "Achat effectué avec succès !");
                 } catch (RemoteException ex) {
-                    ex.printStackTrace();
+                    System.err.println(ex.getMessage());
                     JOptionPane.showMessageDialog(null, "Erreur lors de l'achat.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        // Recerche Article
+        // Recherche Article
         ButtonRechercheArticle.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
@@ -263,6 +264,7 @@ public class Window extends JFrame {
             }
         });
 
+        // Filtre Famille
         textFiltreFamille.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
@@ -306,8 +308,17 @@ public class Window extends JFrame {
             }
         });
 
-        // Ajouter exemplaires a un article
+        // Ajouter exemplaires à un article
         ButtonInputAAExemplaire.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AjouterExemplaireArticleActionPerformed(e);
+            }
+        });
+        InputTextReferenceArticle.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed
              */
@@ -324,7 +335,7 @@ public class Window extends JFrame {
         setContentPane(contentPane);
     }
 
-    private void CreateOrGetCommandeActionPerformed(java.awt.event.ActionEvent evt) {
+    private void CreateOrGetCommandeActionPerformed(java.awt.event.ActionEvent ignoredEvt) {
         articleCommandeListModel = new DefaultListModel<>();
 
         if (ReferenceCommande.getText().isEmpty()) {
@@ -375,7 +386,7 @@ public class Window extends JFrame {
         }
     }
 
-    private void RechercheArticleActionPerformed(java.awt.event.ActionEvent evt) {
+    private void RechercheArticleActionPerformed(java.awt.event.ActionEvent ignoredEvt) {
         if (InputRechercheArticle.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
@@ -393,7 +404,7 @@ public class Window extends JFrame {
         }
     }
 
-    private void RechercheTicketActionPerformed(java.awt.event.ActionEvent evt) {
+    private void RechercheTicketActionPerformed(java.awt.event.ActionEvent ignoredEvt) {
         if (InputTicketReference.getText().isEmpty() && InputDateTicket.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Les champs doivent être remplie! \n RAPPEL Format Reference Ticket : numbers only \n RAPPEL Format Date : dd-mm-yyyy ", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
@@ -421,7 +432,7 @@ public class Window extends JFrame {
         }
     }
 
-    private void ChiffreAffaireActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ChiffreAffaireActionPerformed(java.awt.event.ActionEvent ignoredEvt) {
         if (InputTextDateChiffreAffaire.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Le champ doit être remplie! \n RAPPEL Format Date : dd-mm-yyyy ", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
@@ -438,13 +449,13 @@ public class Window extends JFrame {
                 JOptionPane.showMessageDialog(null, "La date " + InputTextDateChiffreAffaire.getText() + " n'existe pas!", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            textPaneChiffreAffaire.setText("<html><body style='text-align:center; font-size:1.5em'> Chiffre d'affaire pour la date : " + InputTextDateChiffreAffaire.getText()  + "<br> Chiffre d'affaire : " + ChiffreAffaire + "€ </div></body></html>");
+            textPaneChiffreAffaire.setText("<html><body style='text-align:center; font-size:1.5em'> Chiffre d'affaire pour la date : " + InputTextDateChiffreAffaire.getText() + "<br> Chiffre d'affaire : " + ChiffreAffaire + "€ </div></body></html>");
         } catch (RemoteException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    private void AjouterExemplaireArticleActionPerformed(java.awt.event.ActionEvent evt) {
+    private void AjouterExemplaireArticleActionPerformed(java.awt.event.ActionEvent ignoredEvt) {
         if (InputTextReferenceArticle.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Erreur", JOptionPane.WARNING_MESSAGE);
             return;
@@ -487,7 +498,7 @@ public class Window extends JFrame {
         slider.setPaintLabels(true);
 
         JLabel valueLabel = new JLabel("Quantité: " + slider.getValue());
-        slider.addChangeListener(e -> valueLabel.setText("Quantité: " + slider.getValue()));
+        slider.addChangeListener(_ -> valueLabel.setText("Quantité: " + slider.getValue()));
 
         panel.add(slider);
         panel.add(valueLabel); // 👈 Show selected value under the slider
