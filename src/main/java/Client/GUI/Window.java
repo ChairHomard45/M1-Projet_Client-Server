@@ -53,6 +53,9 @@ public class Window extends JFrame {
     private JTextPane textPaneChiffreAffaire;
     private JTextField InputTextDateChiffreAffaire;
     private JButton ButtonChiffreAffaire;
+    private JPanel InputAAExemplairePanel;
+    private JTextField InputTextReferenceArticle;
+    private JButton ButtonInputAAExemplaire;
 
     /**
      * Variable Privé pour les requètes.
@@ -94,7 +97,7 @@ public class Window extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 if (ArticlesDeLaCommandeList.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "La commande ne doit pas être vide", "Info", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "La commande ne doit pas être vide", "Warning", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 JRadioButton especeButton = new JRadioButton(ModePaiement.ESPECE);
@@ -158,14 +161,14 @@ public class Window extends JFrame {
                 int maxQte;
                 ObjectArticle obj;
                 if (ArticleJList.isSelectionEmpty()) {
-                    JOptionPane.showMessageDialog(null, "La séléction ne doit pas être vide", "Info", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "La séléction ne doit pas être vide", "Warning", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 try {
                     String refArticle = getKeyByValue(refsArticlesList, ArticleJList.getSelectedValue());
                     obj = rmi.getStubArticle().getInfoArticle(refArticle);
                     if (obj == null) {
-                        JOptionPane.showMessageDialog(null, "Erreur dans la récupération du nombre de l'Article", "Info", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Erreur dans la récupération du nombre de l'Article", "Warning", JOptionPane.WARNING_MESSAGE);
                         return;
                     }
                     maxQte = obj.getQte();
@@ -273,7 +276,7 @@ public class Window extends JFrame {
                         refsArticlesList = (Hashtable<String, String>) rmi.getStubArticle().getRefsArticles(textFiltreFamille.getText());
                     }
                     if (refsArticlesList == null) {
-                        JOptionPane.showMessageDialog(null, "Erreur avec la récupération des articles de la famille " + textFiltreFamille.getText(), "Info", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Erreur avec la récupération des articles de la famille " + textFiltreFamille.getText(), "Erreur", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     ArticleJList.setListData(refsArticlesList.values().toArray(new String[0]));
@@ -290,7 +293,7 @@ public class Window extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                chiffreAffaireActionPerformed(e);
+                ChiffreAffaireActionPerformed(e);
             }
         });
         ButtonChiffreAffaire.addActionListener(new ActionListener() {
@@ -299,10 +302,20 @@ public class Window extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                chiffreAffaireActionPerformed(e);
+                ChiffreAffaireActionPerformed(e);
             }
         });
 
+        // Ajouter exemplaires a un article
+        ButtonInputAAExemplaire.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AjouterExemplaireArticleActionPerformed(e);
+            }
+        });
     }
 
     private void createUIComponents() {
@@ -315,21 +328,21 @@ public class Window extends JFrame {
         articleCommandeListModel = new DefaultListModel<>();
 
         if (ReferenceCommande.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         if (!ReferenceCommande.getText().matches("^[0-9]{1,9}$")) {
-            JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres et doit contenir 1 à 9 chiffres!", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres et doit contenir 1 à 9 chiffres!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
             int resultFonction = rmi.getStubArticleAcheteur().creerCommande(Integer.parseInt(ReferenceCommande.getText()));
             if (resultFonction == -1) {
-                JOptionPane.showMessageDialog(null, "Une erreur s'est produite pendant la création de la commande.", "Info", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Une erreur s'est produite pendant la création de la commande.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (resultFonction == 2) {
-                JOptionPane.showMessageDialog(null, "L'Id de commande qui vous essayer de créer existe déjà et est terminer", "Info", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "L'Id de commande qui vous essayer de créer existe déjà et est terminer", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -364,14 +377,14 @@ public class Window extends JFrame {
 
     private void RechercheArticleActionPerformed(java.awt.event.ActionEvent evt) {
         if (InputRechercheArticle.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
             ObjectArticle retrievedArticle = rmi.getStubArticle().getInfoArticle(InputRechercheArticle.getText());
             if (retrievedArticle == null) {
-                JOptionPane.showMessageDialog(null, "La référence donnée ne correspond a aucun article!", "Info", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La référence donnée ne correspond a aucun article!", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             textArticleInfoPane.setText(retrievedArticle.toStringTextPane());
@@ -382,24 +395,24 @@ public class Window extends JFrame {
 
     private void RechercheTicketActionPerformed(java.awt.event.ActionEvent evt) {
         if (InputTicketReference.getText().isEmpty() && InputDateTicket.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Les champs doivent être remplie! \n RAPPEL Format Reference Ticket : numbers only \n RAPPEL Format Date : dd-mm-yyyy ", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Les champs doivent être remplie! \n RAPPEL Format Reference Ticket : numbers only \n RAPPEL Format Date : dd-mm-yyyy ", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (!InputTicketReference.getText().matches("^[0-9]*$")) {
-            JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres!", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Le champ doit contenir que des chiffres!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (!InputDateTicket.getText().matches("^[0-9]{2}-[0-9]{2}-[0-9]{4}$")) {
-            JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
             ObjectFacture Facture = rmi.getStubFacture().consulterFacture(Integer.parseInt(InputTicketReference.getText()), InputDateTicket.getText());
             if (Facture == null) {
-                JOptionPane.showMessageDialog(null, "La référence ou la date donnée ne correspondent a aucune facture!", "Info", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La référence ou la date donnée ne correspondent a aucune facture!", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             textFacturePane.setText(Facture.toStringTextPane());
@@ -408,24 +421,57 @@ public class Window extends JFrame {
         }
     }
 
-    private void chiffreAffaireActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ChiffreAffaireActionPerformed(java.awt.event.ActionEvent evt) {
         if (InputTextDateChiffreAffaire.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Le champ doit être remplie! \n RAPPEL Format Date : dd-mm-yyyy ", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Le champ doit être remplie! \n RAPPEL Format Date : dd-mm-yyyy ", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (!InputTextDateChiffreAffaire.getText().matches("^[0-9]{2}-[0-9]{2}-[0-9]{4}$")) {
-            JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Info", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Le champ doit être de ce format : dd-mm-yyyy", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
             float ChiffreAffaire = rmi.getStubCalculCA().getCA(InputTextDateChiffreAffaire.getText());
             if (ChiffreAffaire == -1) {
-                JOptionPane.showMessageDialog(null, "La date " + InputTextDateChiffreAffaire.getText() + " n'existe pas!", "Info", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La date " + InputTextDateChiffreAffaire.getText() + " n'existe pas!", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             textPaneChiffreAffaire.setText("<html><body style='text-align:center; font-size:1.5em'> Chiffre d'affaire pour la date : " + InputTextDateChiffreAffaire.getText()  + "<br> Chiffre d'affaire : " + ChiffreAffaire + "€ </div></body></html>");
+        } catch (RemoteException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void AjouterExemplaireArticleActionPerformed(java.awt.event.ActionEvent evt) {
+        if (InputTextReferenceArticle.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Le champ doit être remplie!", "Erreur", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Integer selectedQuantity = showQuantitySelectionDialog(100, "Choisissez le nombre d'articles à ajouter :", "Quantité à ajouter");
+
+        if (selectedQuantity == null) {
+            System.out.println("Ajout annulé.");
+            return;
+        }
+
+        try {
+            int status = rmi.getStubArticleEmployer().ajouterArticle(InputTextReferenceArticle.getText(), selectedQuantity);
+            switch (status) {
+                case -1:
+                    JOptionPane.showMessageDialog(null, "Une Erreur s'est produite lors de l'ajout!", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                case 0:
+                    JOptionPane.showMessageDialog(null, "L'ajout a bien été réalisé.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                case 1:
+                    JOptionPane.showMessageDialog(null, "Aucun article ne correspond a la référence donné!", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                default:
+
+            }
         } catch (RemoteException ex) {
             throw new RuntimeException(ex);
         }
