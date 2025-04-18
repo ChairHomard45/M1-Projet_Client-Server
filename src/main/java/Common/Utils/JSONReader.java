@@ -1,4 +1,4 @@
-package Server.Utils;
+package Common.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

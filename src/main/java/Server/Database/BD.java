@@ -1,6 +1,6 @@
 package Server.Database;
 
-import Server.Utils.JSONReader;
+import Common.Utils.JSONReader;
 import Server.Utils.PathsClass;
 import org.json.JSONObject;
 

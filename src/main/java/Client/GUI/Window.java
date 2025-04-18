@@ -56,6 +56,7 @@ public class Window extends JFrame {
     private JPanel InputAAExemplairePanel;
     private JTextField InputTextReferenceArticle;
     private JButton ButtonInputAAExemplaire;
+    private JPanel PanelGroup;
 
     /**
      * Variable Privé pour les requètes.

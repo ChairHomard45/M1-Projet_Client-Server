@@ -4,7 +4,7 @@ import Common.Facture.IFactureAcheteur;
 import Common.Objects.ObjectArticle;
 import Common.Objects.ObjectFacture;
 import Server.Database.BD;
-import Server.Utils.JSONAppend;
+import Common.Utils.JSONAppend;
 import Server.Utils.PathsClass;
 
 import java.sql.*;
@@ -80,8 +80,10 @@ public class FactureAcheteurImpl implements IFactureAcheteur {
             pS.close();
 
             ObjectFacture objectFacture = new ObjectFacture(refCommande, montCom, dateActuel, modePaiement, articles);
-            JSONAppend.insertJSONObject(objectFacture.toJSON(), PathsClass.getJSONFilePath(dateActuel));
-            return 0;
+
+            if (JSONAppend.insertJSONObject(objectFacture.toJSON(), PathsClass.getJSONFilePath(dateActuel)))
+                return 0;
+            return -2;
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;

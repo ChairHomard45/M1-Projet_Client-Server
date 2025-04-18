@@ -2,7 +2,7 @@ package Server.CalculCA;
 
 import Common.CalculCA.ICalculCA;
 import Server.Utils.DateChecker;
-import Server.Utils.JSONReader;
+import Common.Utils.JSONReader;
 import Server.Utils.PathsClass;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,7 +28,6 @@ public class CalculCAImpl implements ICalculCA {
         jsonArray.toList();
         BigDecimal ca = BigDecimal.ZERO;
         for (JSONObject obj : JSONReader.getListFromArray(jsonArray)) {
-            System.out.println(obj.getFloat("montant_commande"));
             ca = ca.add(obj.getBigDecimal("montant_commande"));
         }
 

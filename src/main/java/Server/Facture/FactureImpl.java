@@ -3,7 +3,7 @@ package Server.Facture;
 import Common.Facture.IFacture;
 import Common.Objects.ObjectFacture;
 import Server.Utils.DateChecker;
-import Server.Utils.JSONReader;
+import Common.Utils.JSONReader;
 import Server.Utils.PathsClass;
 import org.json.JSONArray;
 import org.json.JSONObject;

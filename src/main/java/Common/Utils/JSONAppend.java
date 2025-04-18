@@ -1,4 +1,4 @@
-package Server.Utils;
+package Common.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,8 +51,12 @@ public final class JSONAppend {
     public static boolean insertJSONArray(JSONArray jsonArray, String Filename){
         try {
             File file = new File(Filename);
+            File parent = file.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
             FileWriter fileWriter;
-
+            System.out.println(Filename);
             JSONArray fileArray = new JSONArray();
             if (!file.createNewFile()) {
                 fileArray = JSONReader.getJSONArrayFromFile(Filename);
