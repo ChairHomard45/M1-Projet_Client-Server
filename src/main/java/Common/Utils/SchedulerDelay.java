@@ -1,7 +1,5 @@
 package Common.Utils;
 
-import Common.Siege.IUpdatePrix;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Timer;
@@ -13,7 +11,7 @@ public final class SchedulerDelay {
         long period = 24 * 60 * 60 * 1000L;
 
         timer.scheduleAtFixedRate(task, delay, period);
-        System.out.println("Scheduled "+ nameTask +"() daily at " + targetHour + ":00");
+        System.out.println("Scheduled "+ nameTask +"() tous les jours pour " + targetHour + ":00");
     }
 
     public static long calculateInitialDelay(int targetHour) {
