@@ -14,7 +14,7 @@ public class TransferTicketsImpl implements ITransferTickets {
      * @return Status
      */
     @Override
-    public int transferTicketJson(String filename, ObjectFacture[] tickets) {
+    public synchronized int transferTicketJson(String filename, ObjectFacture[] tickets) {
         if (tickets.length == 0) {
             return 1;
         }

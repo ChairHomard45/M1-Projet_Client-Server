@@ -23,7 +23,7 @@ public class ArticleAcheteurImpl implements IArticleAcheteur {
      * @return Objet Article acheté
      */
     @Override
-    public ObjectArticle acheterArticle(int refCommande, String refArticle, int qte) {
+    public synchronized ObjectArticle acheterArticle(int refCommande, String refArticle, int qte) {
         Connection con = BD.getInstance().getConnection();
         PreparedStatement pS;
         ResultSet rs;
@@ -105,7 +105,7 @@ public class ArticleAcheteurImpl implements IArticleAcheteur {
      * @return returner 0 si OK, -1 si Exception et 1 si existe déjà
      */
     @Override
-    public int creerCommande(int refCommande) {
+    public synchronized int creerCommande(int refCommande) {
         Connection con = BD.getInstance().getConnection();
         PreparedStatement pS;
         ResultSet rs;
@@ -139,7 +139,7 @@ public class ArticleAcheteurImpl implements IArticleAcheteur {
         return 0;
     }
 
-    public List<ObjectArticle> consulterCommande(int refCommande) throws RemoteException{
+    public synchronized List<ObjectArticle> consulterCommande(int refCommande) throws RemoteException{
         Connection con = BD.getInstance().getConnection();
         PreparedStatement pS;
         ResultSet rs;

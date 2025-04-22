@@ -41,6 +41,7 @@ public class Rmi {
             System.out.println("Serveur initRMI");
             LocateRegistry.createRegistry(2500);
             Registry reg = LocateRegistry.getRegistry("localhost", 2500);
+            Registry regSiege = LocateRegistry.getRegistry("localhost", 2600);
 
             /* Init Class */
             CalculCAImpl calculCA = new CalculCAImpl();
@@ -67,10 +68,10 @@ public class Rmi {
             reg.rebind("ArticleEmployerImpl", stubArticleEmployer);
             reg.rebind("FactureAcheteurImpl", stubFactureAcheteur);
             reg.rebind("FactureImpl", stubFacture);
-            reg.rebind("UpdatePrixImpl", stubUpdatePrix);
+            regSiege.rebind("UpdatePrixImpl", stubUpdatePrix);
 
             /* STUB - Int */
-            ITransferTickets stubTransferTickets = waitForTransferTicketsStub(reg);
+            ITransferTickets stubTransferTickets = waitForTransferTicketsStub(regSiege);
 
             scheduleDailyTransferTicket(stubTransferTickets, 22);
 

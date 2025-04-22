@@ -15,7 +15,7 @@ public class FactureImpl implements IFacture {
      * @return ObjectFacture contenant toutes les données.
      */
     @Override
-    public ObjectFacture consulterFacture(int refCommande, String date) {
+    public synchronized ObjectFacture consulterFacture(int refCommande, String date) {
         if (!DateChecker.isDate(date)) {
             return null;
         }

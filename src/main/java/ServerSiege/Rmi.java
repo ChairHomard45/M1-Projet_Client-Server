@@ -29,8 +29,8 @@ public final class Rmi {
     private static void initRMI() {
         try {
             System.out.println("Serveur Siège initRMI");
-
-            Registry reg = LocateRegistry.getRegistry("localhost", 2500);
+            LocateRegistry.createRegistry(2600);
+            Registry reg = LocateRegistry.getRegistry("localhost", 2600);
 
             /* Init Class - Impl */
             TransferTicketsImpl transferTickets = new TransferTicketsImpl();

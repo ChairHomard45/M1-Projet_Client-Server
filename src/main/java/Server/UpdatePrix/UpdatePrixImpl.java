@@ -16,7 +16,7 @@ public class UpdatePrixImpl implements IUpdatePrix {
      * @return status
      */
     @Override
-    public int updatePrix(HashMap<String, Float> dictionary) {
+    public synchronized int updatePrix(HashMap<String, Float> dictionary) {
         if (dictionary.isEmpty()) {
             return 1;
         }

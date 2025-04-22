@@ -20,7 +20,7 @@ public class FactureAcheteurImpl implements IFactureAcheteur {
      * @param refCommande Reférence de la commande à payer
      */
     @Override
-    public int payerFacture(int refCommande, String modePaiement) {
+    public synchronized int payerFacture(int refCommande, String modePaiement) {
         Connection con = BD.getInstance().getConnection();
         float montCom = 0;
         String dateActuel = new SimpleDateFormat("dd-MM-yyyy").format(new Date());

@@ -20,7 +20,7 @@ public class ArticleImpl implements IArticle
      * @return un objet Article avec les informations
      */
     @Override
-    public ObjectArticle getInfoArticle(String refArticle)
+    public synchronized ObjectArticle getInfoArticle(String refArticle)
     {
         Connection con = BD.getInstance().getConnection();
         PreparedStatement ps;
@@ -64,7 +64,7 @@ public class ArticleImpl implements IArticle
      * @return une liste des références d'articles de cette famille
      */
     @Override
-    public Dictionary<String, String> getRefsArticles(String refFamille)
+    public synchronized Dictionary<String, String> getRefsArticles(String refFamille)
     {
         Connection con = BD.getInstance().getConnection();
         PreparedStatement ps;
@@ -103,7 +103,7 @@ public class ArticleImpl implements IArticle
      * @return un dictionnaire des références d'articles
      */
     @Override
-    public Dictionary<String, String> getRefsArticles()
+    public synchronized Dictionary<String, String> getRefsArticles()
     {
         Connection con = BD.getInstance().getConnection();
         PreparedStatement ps;

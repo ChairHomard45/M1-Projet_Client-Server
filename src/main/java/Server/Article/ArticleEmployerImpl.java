@@ -15,7 +15,7 @@ public class ArticleEmployerImpl implements IArticleEmployer {
      * @return returner 0 si OK, -1 si Exception et 1 si existe déjà
      */
     @Override
-    public int ajouterArticle(String refArticle, int qte) {
+    public synchronized int ajouterArticle(String refArticle, int qte) {
         Connection con = BD.getInstance().getConnection();
         PreparedStatement pS;
         ResultSet rs;
