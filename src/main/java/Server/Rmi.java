@@ -39,7 +39,8 @@ public class Rmi {
     private static void initRMI() {
         try {
             System.out.println("Serveur initRMI");
-            Registry reg = LocateRegistry.getRegistry();
+            LocateRegistry.createRegistry(2500);
+            Registry reg = LocateRegistry.getRegistry("localhost", 2500);
 
             /* Init Class */
             CalculCAImpl calculCA = new CalculCAImpl();

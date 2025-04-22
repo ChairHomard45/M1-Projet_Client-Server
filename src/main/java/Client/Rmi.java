@@ -30,7 +30,7 @@ public class Rmi {
     private Rmi() {
         // Récupérer le registre
         try {
-            Registry reg = LocateRegistry.getRegistry(null);
+            Registry reg = LocateRegistry.getRegistry("localhost", 2500);
 
             // Recherche dans le registre de l'objet distant
             stubCalculCA = (ICalculCA) reg.lookup("CalculCAImpl");

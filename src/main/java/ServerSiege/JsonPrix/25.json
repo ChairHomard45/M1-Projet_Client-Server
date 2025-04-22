@@ -1,14 +1,16 @@
 [
-  {
-    "reference_article": "FGER",
-    "nouveau_prix": 12
-  },
-  {
-    "reference_article": "FFFEEE",
-    "nouveau_prix": 12
-  },
-  {
-    "reference_article": "GJHRKG",
-    "nouveau_prix": 12
-  }
+  { "reference_article": "ART001", "nouveau_prix": 10.99 },
+  { "reference_article": "ART002", "nouveau_prix": 21.99 },
+  { "reference_article": "ART003", "nouveau_prix": 79.99 },
+  { "reference_article": "ART004", "nouveau_prix": 34.99 },
+  { "reference_article": "ART005", "nouveau_prix": 8.99 },
+  { "reference_article": "ART006", "nouveau_prix": 54.99 },
+  { "reference_article": "ART007", "nouveau_prix": 279.99 },
+  { "reference_article": "ART008", "nouveau_prix": 13.49 },
+  { "reference_article": "ART009", "nouveau_prix": 44.99 },
+  { "reference_article": "ART010", "nouveau_prix": 29.99 },
+  { "reference_article": "ART011", "nouveau_prix": 17.99 },
+  { "reference_article": "ART012", "nouveau_prix": 6.99 },
+  { "reference_article": "ART013", "nouveau_prix": 119.99 },
+  { "reference_article": "ART014", "nouveau_prix": 419.99 }
 ]

@@ -5,7 +5,7 @@ import Client.GUI.Window;
 import javax.swing.*;
 
 public class Client {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         initGUI();
         initRMI();
     }

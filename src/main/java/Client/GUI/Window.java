@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -69,6 +70,7 @@ public class Window extends JFrame {
 
     public Window() {
         rmi = Rmi.GetInstance();
+        ArticlesDeLaCommandeList = new ArrayList<>();
         // Reference
         ReferenceCommandeButton.addActionListener(new ActionListener() {
             /**
@@ -192,12 +194,13 @@ public class Window extends JFrame {
                             selectedQuantity
                     );
                     int existingIndex = -1;
-                    for (int i = 0; i < ArticlesDeLaCommandeList.size(); i++) {
-                        if (ArticlesDeLaCommandeList.get(i).getReferenceArticle().equals(articleAcheter.getReferenceArticle())) {
-                            existingIndex = i;
-                            break;
+                    if (ArticlesDeLaCommandeList != null)
+                        for (int i = 0; i < ArticlesDeLaCommandeList.size(); i++) {
+                            if (ArticlesDeLaCommandeList.get(i).getReferenceArticle().equals(articleAcheter.getReferenceArticle())) {
+                                existingIndex = i;
+                                break;
+                            }
                         }
-                    }
                     if (existingIndex != -1) {
                         // Replace in both the list and the UI model
                         ArticlesDeLaCommandeList.set(existingIndex, articleAcheter);
@@ -208,6 +211,7 @@ public class Window extends JFrame {
                         articleCommandeListModel.addElement(articleAcheter);
                     }
                     ArticlesDeLaCommande.setModel(articleCommandeListModel);
+                    refreshListArticle();
                     JOptionPane.showMessageDialog(null, "Achat effectué avec succès !");
                 } catch (RemoteException ex) {
                     System.err.println(ex.getMessage());
@@ -560,5 +564,15 @@ public class Window extends JFrame {
         ArticlesDeLaCommande.clearSelection();
 
         JOptionPane.showMessageDialog(null, "Commande réinitialisée.");
+    }
+
+    private void refreshListArticle(){
+        try {
+            refsArticlesList = (Hashtable<String, String>) rmi.getStubArticle().getRefsArticles();
+            ArticleJList.setListData(refsArticlesList.values().toArray(new String[0]));
+            textFiltreFamille.setText("");
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

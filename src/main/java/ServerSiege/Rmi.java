@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static Common.Utils.SchedulerDelay.calculateInitialDelay;
 
 public final class Rmi {
     public Rmi(){
@@ -31,7 +30,7 @@ public final class Rmi {
         try {
             System.out.println("Serveur Siège initRMI");
 
-            Registry reg = LocateRegistry.getRegistry();
+            Registry reg = LocateRegistry.getRegistry("localhost", 2500);
 
             /* Init Class - Impl */
             TransferTicketsImpl transferTickets = new TransferTicketsImpl();
