@@ -7,4 +7,11 @@ informations de stock et de facturation de manière persistante et doit utiliser
  - DELEPAUT Clément - 1° année Master Miage
  - BEAUVOIS Aléxis  - 1° année Master Miage
 
+### Ordre pour exécuter les applications : 
+ - Compiler tous
+ - Ensuit exécuter le ServerSiege
+ - Puis exécuter le Server
+ - Enfin exécuter le client 
+
 ### [Consignes](Consignes.pdf)
+### [Base De Données](Magasin-3.sql)
